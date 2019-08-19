@@ -1,0 +1,17 @@
+lr: 0.0001
+lr_step: 20
+phase: predict
+augmentation: r
+extra: corner_edge
+batch_size: 4
+val_interval: 1
+num_epochs: 35
+visualize_iter: 5
+use_cuda: True
+decay_rate: 0
+im_size: 256
+seed: 12138
+resume: False
+model_path: /local-scratch/cjc/Lianjia-inverse-cad/FloorPlotter/results_corner/lr_0.0001_batch_size_4_augmentation_r_corner_edge/checkpoints/checkpoint_corner_edge_34.pth.tar
+dump_prediction: True
+exp_base_dir: ./results_corner

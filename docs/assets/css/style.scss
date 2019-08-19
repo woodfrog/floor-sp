@@ -1,0 +1,53 @@
+---
+---
+
+@import 'jekyll-theme-cayman';
+
+
+
+.page-header {
+  color: $header-heading-color;
+  text-align: center;
+  background-color: #EEEEEE;
+  background-image: none;
+  opacity: 0.8;
+
+  @include large {
+    padding-left: 8rem;
+    padding-right: 8rem;
+    padding-top: 3rem;
+    padding-bottom: 0.5rem;
+  }
+
+  @include medium {
+    padding: 3rem 4rem;
+  }
+
+  @include small {
+    padding: 2rem 1rem;
+  }
+}
+
+
+.project-name {
+	color: #111111;
+}
+
+
+.project-tagline {
+	color: #111111;
+	a {
+		color: #111111;	
+		text-decoration: underline;
+	}
+}
+
+.text-center {
+  text-align: center;
+}
+
+.bibtex-box {
+  background-color: #EEEEEE;
+  padding-top: 0.5rem;
+  padding-bottom: 0.5rem;
+}

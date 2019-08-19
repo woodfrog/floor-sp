@@ -1,0 +1,10 @@
+.idea/
+logs/
+data/
+test/
+*.pth
+*.so
+*.pyc
+*.o
+pycocotools
+*_ext*
