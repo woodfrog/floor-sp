@@ -9,18 +9,18 @@ This paper proposes a new approach for automated floorplan reconstruction from R
 # Paper
 
 <div>
-	<a href="">
+	<a href="assets/floor_sp.pdf">
 	<img class="thumbnail" src="assets/img/paper_thumbnail.png"> 
 	</a>
 </div>>
 
 <div class="text-center">
-	<a href="assets/floor_sp.pdf"> Download </a>
+	<a href="assets/floor_sp.pdf"> Download PDF </a> &nbsp; &nbsp; <a href="https://arxiv.org/abs/1908.06702"> Arxiv </a>
 </div>
 
 <br>
 <div class="bibtex-box">
-	<strong>@InProceedings{</strong>chen2019floorsp,
+	<strong>@InProceedings{</strong>cjc2019floorsp,
 	<br>
 	&nbsp;&nbsp;&nbsp;&nbsp; title={Floor-SP: Inverse CAD for Floorplans by Sequential Room-wise Shortest Path}, 
 	<br> 

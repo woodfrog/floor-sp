@@ -6,7 +6,7 @@
 3. [Floor-SP](#Floor-SP)
 	- [Mask-RCNN](#1-mask-rcnn)
 	- [corner/edgeness modules](#2-corneredgeness-modules)
-	- [Room-wise coordinate descent ](#3-room-wise-coordinate-descent)
+	- [Sequential room-wise shortest path ](#3-sequential-room-wise-shortest-path)
 	- [Room merging ](#4-room-merging)
 4. [Environment Setup](#environment-setup)
     - [Algorithm dependencies](#algorithm-dependencies)
@@ -15,9 +15,23 @@
 
 ## Overview
 
-This is the official implementation of the paper [Floor-SP: Inverse CAD for Floorplans by Sequential Room-wise Shortest Path](). 
+This is the official implementation of the paper [Floor-SP: Inverse CAD for Floorplans by Sequential Room-wise Shortest Path](https://arxiv.org/abs/1908.06702), published on ICCV 2019.  
 
 Floor-SP takes aligned RGBD scans of an indoor space as the input and produces floorplan estimation. The overall pipeline consists of 1) Data pre-processing and 2) Running Floor-SP. Detailed steps will be explained in following sections.
+
+If you find the paper and the code helpful, please consider citing our paper:
+
+```
+@InProceedings{cjc2019floorsp, 
+     title={Floor-SP: Inverse CAD for Floorplans by Sequential Room-wise Shortest Path}, 
+     author={Jiacheng Chen, Chen Liu, Jiaye Wu, Yasutaka Furukawa}, 
+     booktitle={The IEEE International Conference on Computer Vision (ICCV)}, 
+     year={2019}
+}
+
+```
+
+
 
 
 ## Data preprocessing
@@ -67,13 +81,12 @@ Similarly, `./floor-sp/mains/associate_main.py` is the script for the training/ 
 Detailed instructions can be checked in `./floor-sp/README.md`.
 
 
-### 3. Room-wise coordinate descent 
-**Room-wise coordinate descent via dense DP** for generating near-optimal per-room structure 
-(`./floor-sp/utils/floorplan_utils/`)
+### 3. Sequential room-wise shortest path 
+We devise **the room-wise coordinate descent strategy (sequential room-wise shortest path)** to optimize room structures for the floorplan. (details are in `./floor-sp/utils/floorplan_utils/`)
 
-**Room-wise coordinate descent** solves the **room-aware floorplan reconstruction**, an energy minimization problem, by using dynamic programming as the solver. The paper [Piecewise Planar and Compact Floorplan Reconstruction from Images](https://dl.acm.org/citation.cfm?id=2679884) [1] uses dynamic programming to find an optimal global floorplan (actually an outer-most boundary) for an indoor space. Following this idea, our room-wise coordinate descent runs dynamic programming iteratively to solve the optimal per-room structure. The rooms are processed sequentially and there could be multiple rounds of optimization just as in traditional coordinate descent. 
+**Room-wise coordinate descent** solves the **room-aware floorplan reconstruction**, an energy minimization problem, by using dynamic programming as the solver. The paper [Piecewise Planar and Compact Floorplan Reconstruction from Images](https://dl.acm.org/citation.cfm?id=2679884) [1] uses shortest path algorithm to find an optimal global floorplan (actually an outer-most boundary) for an indoor space. Following this idea, our room-wise coordinate descent runs shortest path algorithm iteratively to solve the optimal per-room structure. The rooms are processed sequentially and there could be multiple rounds of optimization just as in traditional coordinate descent. 
 
-The energy minimization problem is established using room instance segmentations, room corner likelihood maps and room edge likelihood maps that we generated in previous parts of Floor-SP. `./floor-sp/mains/extract_floorplan.py` is the script for running room-wise coordinate descent. The algorithm related code can be found in `./floor-sp/utils/floorplan_utils`. 
+The energy minimization problem is established using room instance segmentations, room corner likelihood maps and room edge likelihood maps that we generated in previous parts of Floor-SP. **`./floor-sp/mains/extract_floorplan.py` is the script for running room-wise coordinate descent, together with room merging and the final visualization**. The algorithm related code can be found in `./floor-sp/utils/floorplan_utils`. 
 
 
 ### 4. Room merging 
