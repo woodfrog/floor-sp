@@ -255,6 +255,7 @@ class RecordWriter:
         self.ply_paths, self.annot_paths = self.get_filepaths()
 
         self.log_path = os.path.join(self.base_dir, '{}_log_{}.txt'.format(save_prefix, self.phase))
+        self.scene_id_path = os.path.join(self.base_dir, '{}_log_scene_ids_{}.txt'.format(save_prefix, self.phase))
         self.log_lines = list()
 
         # if a separate room dataset is required
@@ -314,6 +315,7 @@ class RecordWriter:
         num_edges = 0
         num_rooms = 0
         non_man_rooms = 0
+        scene_ids = list()
         for ply_file_path, annot_file_path in zip(self.ply_paths, self.annot_paths):
             succ, stats = self.write_example(ply_file_path, annot_file_path)
             if succ:
@@ -323,6 +325,7 @@ class RecordWriter:
                 num_edges += stats['num_edges']
                 num_corners += stats['num_corners']
                 non_man_rooms += stats['non_manhattan_rooms']
+                scene_ids.append(stats['id'])
 
         avg_points = num_points * 1.0 / succ_count
         avg_corners = num_corners * 1.0 / succ_count
@@ -336,6 +339,9 @@ class RecordWriter:
         with open(self.log_path, 'w') as f:
             for line in self.log_lines:
                 f.write(line + '\n')
+        with open(self.scene_id_path, 'w') as f:
+            for scene_id in scene_ids:
+                f.write(scene_id + '\n')
 
     def write_example(self, ply_path, annot_path):
         points = read_scene_pc(ply_path)
@@ -382,6 +388,7 @@ class RecordWriter:
             topview_points = self.get_topview_data(vertical_points)
 
         annot = self.parse_annot(annot_path, mins, max_range)
+        scene_id, _ = os.path.splitext(os.path.basename(annot_path))
 
         points[:, 3:6] = points[:, 3:6] / 255 - 0.5  # normalize color
 
@@ -473,6 +480,7 @@ class RecordWriter:
 
         topview_image = drawDensityImage(topview_points[:, :, -1], nChannels=3)
         room_data = {
+            'scene_id': scene_id,
             'topview_image': topview_image,
             'topview_mean_normal': topview_mean_normal,
             'room_instances_annot': room_instances,
@@ -494,6 +502,7 @@ class RecordWriter:
                 num_non_manhattan_room += 1
 
         stats = {
+            'id': scene_id,
             'num_points': len(vertical_points),
             'num_corners': len(point_dict),
             'num_edges': len(lines),
@@ -636,8 +645,8 @@ class RecordWriter:
 
 
 if __name__ == '__main__':
-    base_dir = '/local-scratch/cjc/ICCV19/FloorPlotter/data/lianjia_500/processed'
-    extra_test_dir = '/local-scratch/cjc/ICCV19/FloorPlotter/data/extra_test/processed'
+    base_dir = '../data/lianjia_500/processed'
+    extra_test_dir = '../data/extra_test/processed'
     record_writer = RecordWriter(num_points=50000, base_dir=base_dir, phase='train', im_size=256, save_prefix='Lianjia_nonM', allow_non_man=True)
     record_writer.write()
     record_writer_test = RecordWriter(num_points=50000, base_dir=base_dir, phase='test', im_size=256,
