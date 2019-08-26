@@ -23,5 +23,5 @@
 
 ## Room-wise coordinate descent + room merging
 
-1. `./mains/extract\_floorplan.py` runs the *room-wise coordinate descent*, the sequential room-wise shortest path algorithm, to solve for the optimal room polygonal loops. The room structures are then merged into a final floorplan.
+1. `./mains/extract_floorplan.py` runs the *room-wise coordinate descent*, the sequential room-wise shortest path algorithm, to solve for the optimal room polygonal loops. The room structures are then merged into a final floorplan.
 

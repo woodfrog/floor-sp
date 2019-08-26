@@ -15,7 +15,7 @@ This paper proposes a new approach for automated floorplan reconstruction from R
 </div>>
 
 <div class="text-center">
-	<a href="assets/floor_sp.pdf"> Download PDF </a> &nbsp; &nbsp; <a href="https://arxiv.org/abs/1908.06702"> Arxiv </a>
+	<a href="assets/floor_sp.pdf"> Download PDF </a> &nbsp; &nbsp; <a href="https://arxiv.org/abs/1908.06702"> Arxiv </a> &nbsp; &nbsp; <a href="assets/floor_sp_supp.pdf"> Supplementary </a>
 </div>
 
 <br>

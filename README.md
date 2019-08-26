@@ -38,9 +38,9 @@ The data will be release by Beike(www.ke.com), the link will be provided soon.
 
 We need to pre-process aligned RGBD scans to get the global point cloud for an indoor space. The global point cloud will then be converted into top-view 2D density map and mean surface normal map, which are the inputs to our Floor-SP. In this part, we also parse the annotation files and roughly clean the annotations by filtering invalid geometric structures. 
 
-1. Run `./utils/data\_process.py` to pre-process data. This merges local point clouds into a global one and parses annotations. This part also makes some simple cleaning on the annotations. Sometimes the given data does not contain the json annotation file, those samples are skipped. 
+1. Run `./utils/data_process.py` to pre-process data. This merges local point clouds into a global one and parses annotations. This part also makes some simple cleaning on the annotations. Sometimes the given data does not contain the json annotation file, those samples are skipped. 
     
-2. Run the data writer `./utils/data\_writer.py` to generate training/testing data for Floor-SP. Floor-SP uses the files under `separate_room_data` directory. This writer is adapted from the data writer of FloorNet[2].
+2. Run the data writer `./utils/data_writer.py` to generate training/testing data for Floor-SP. Floor-SP uses the files under `separate_room_data` directory. This writer is adapted from the data writer of FloorNet[2].
 
 3. Note that the above instructions are for processing data with annotation files. **If the aim is to run pre-trained Floor-SP on new point clouds, we don't need annotations**. A simpler data pre-processing writer could be implemented here.
 
