@@ -15,6 +15,8 @@ This is a Pytorch implementation of [Mask R-CNN](https://arxiv.org/abs/1703.0687
 * matplotlib, scipy, skimage, h5py, it's better to update these libs to the latest versions
 
 ## Installation
+Note that we use CUDA 8.0 for the installation below, using CUDA>=10.1 + some older pytorch versions can lead to problems.
+
 1. Clone this repository.
 
     
@@ -28,7 +30,8 @@ repository and longcw's [RoiAlign](https://github.com/longcw/RoIAlign.pytorch).
     | GTX 960M | sm_50 |
     | GTX 1070 | sm_61 |
     | GTX 1080 (Ti) | sm_61 |
-
+        
+        cd model
         cd nms/src/cuda/
         nvcc -c -o nms_kernel.cu.o nms_kernel.cu -x cu -Xcompiler -fPIC -arch=[arch]
         cd ../../
@@ -40,6 +43,7 @@ repository and longcw's [RoiAlign](https://github.com/longcw/RoIAlign.pytorch).
         cd ../../
         python build.py
         cd ../../
+        cd ..
     
 3. Download the pretrained models on COCO and ImageNet from [Google Drive](https://drive.google.com/open?id=1LXUgC2IZUYNEoXr05tdqyKFZY0pZyPDc).
 
@@ -67,14 +71,4 @@ line as such:
     # Continue training the last model you trained. This will find
     # the last trained weights in the model directory.
     python main.py train --dataset=/path/to/coco/ --model=last
-
-For evaluation:
-
-    # Run valuation on the last trained model
-    python main.py evaluate
-
-The training schedule, learning rate, and other parameters can be set in main.py.
-
-## Results
-
 

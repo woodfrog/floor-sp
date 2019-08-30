@@ -17,12 +17,6 @@ ROOT_DIR = os.getcwd()
 # Directory to save logs and trained model
 MODEL_DIR = os.path.join(ROOT_DIR, "logs")
 
-# Path to trained weights file
-# Download this file and place in the root of your
-# project (See README file for details)
-COCO_MODEL_PATH = os.path.join(ROOT_DIR, "mask_rcnn_coco.pth")
-
-
 class InferenceConfig(main.LianjiaConfig):
     # Set batch size to 1 since we'll be running inference on
     # one image at a time. Batch size = GPU_COUNT * IMAGES_PER_GPU
@@ -40,15 +34,13 @@ if config.GPU_COUNT:
     model = model.cuda()
 
 # Load weights trained on MS-COCO
-saved_model = '/local-scratch/cjc/Lianjia-inverse-cad/mask-rcnn/logs/lianjia_dataset20180920T2038/mask_rcnn_lianjia_dataset_0069.pth'
+saved_model = './logs/lianjia_dataset20180920T2038/mask_rcnn_lianjia_dataset_0069.pth'
 model.load_state_dict(torch.load(saved_model))
 
 print('loaded weights from {}'.format(saved_model))
 
-# COCO Class names
-# Index of the class in the list is its ID. For example, to get ID of
-# the teddy bear class, use: class_names.index('teddy bear')
-metadata_path = '/local-scratch/cjc/Lianjia-inverse-cad/FloorNet/data/first_500/processed/room_metadata.json'
+# Read in metadata
+metadata_path = '/local-scratch/cjc/floor-sp/data/lianjia_500/processed/room_metadata.json'
 with open(metadata_path, 'r') as f:
     metadata = json.load(f)
 label_class_map = metadata['label_room_map']
@@ -58,10 +50,11 @@ label_indices = sorted([int(s) for s in label_class_map.keys()])
 class_names = ['BG', ] + [label_class_map[str(i)] for i in label_indices]
 
 # Load a random image from the images folder
-phase = 'train'
+phase = 'test'
 data_dir = os.path.join(metadata['base_dir'], phase)
 
-CORNER_DATA_BASE = '/local-scratch/cjc/Lianjia-inverse-cad/FloorPlotter/data/Lianjia_corner'
+# Set the corner data base path
+CORNER_DATA_BASE = '/local-scratch/cjc/floor-sp/floor-sp/data/Lianjia_corner'
 if not os.path.exists(CORNER_DATA_BASE):
     os.mkdir(CORNER_DATA_BASE)
 CORNER_DATA_BASE = os.path.join(CORNER_DATA_BASE, phase)
@@ -69,6 +62,8 @@ if not os.path.exists(CORNER_DATA_BASE):
     os.mkdir(CORNER_DATA_BASE)
 
 VIZ_DIR = './{}_viz'.format(phase)
+if not os.path.exists(VIZ_DIR):
+    os.makedirs(VIZ_DIR)
 
 for file_idx, filename in enumerate(sorted(os.listdir(data_dir))):
     file_path = os.path.join(data_dir, filename)

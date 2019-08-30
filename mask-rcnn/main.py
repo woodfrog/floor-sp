@@ -58,11 +58,8 @@ COCO_MODEL_PATH = os.path.join(ROOT_DIR, "pretrained/mask_rcnn_coco.pth")
 # through the command line argument --logs
 DEFAULT_LOGS_DIR = os.path.join(ROOT_DIR, "logs")
 
-"""
-@todo: change file path here, need to use processed 2D top-view map
-"""
-DATASET_BASE_DIR = '/local-scratch/cjc/Lianjia-inverse-cad/data/'
-
+# change the base dir accordingly
+DATASET_BASE_DIR = '/local-scratch/cjc/floor-sp/data/'
 
 ############################################################
 #  Configurations
@@ -284,7 +281,7 @@ if __name__ == '__main__':
         # validation set, as as in the Mask RCNN paper.
         dataset_train = LianjiaDataset()
         dataset_train.load_samples("train",
-                                   metadata_path='/local-scratch/cjc/Lianjia-inverse-cad/FloorNet/data/first_500/processed/room_metadata.json')
+                                   metadata_path=os.path.join(DATASET_BASE_DIR, '/data/lianjia_500/processed/room_metadata.json'))
         dataset_train.prepare()
 
         # # Validation dataset
@@ -319,35 +316,6 @@ if __name__ == '__main__':
                           epochs=200,
                           layers='all',
                           config=config)
-
-    elif args.command == "evaluate":
-        # Load weights trained on MS-COCO
-        # _, last_saved = model.find_last()
-        last_saved = '/local-scratch/cjc/geometry-primitive-detector/mask_rcnn_la_dataset_0025.pth'
-
-        print("Loading weights for training from {}".format(last_saved))
-        model.load_state_dict(torch.load(last_saved))
-        class_names = ['BG', 'edge', 'corner']
-
-        # Validation dataset
-        dataset_test = LianjiaDataset()
-        dataset_test.load_samples('test')
-        dataset_test.prepare()
-
-        im_path = os.path.join(DATASET_BASE_DIR, 'valid_list.txt')
-        with open(im_path) as f:
-            im_path_list = [x.strip() + '.jpg' for x in f.readlines()]
-
-        im_list_rgb = [skimage.io.imread(os.path.join(IMAGE_RGB_DIR, path)) for path in im_path_list]
-        im_list_depth = [np.array(Image.open(os.path.join(IMAGE_DEPTH_DIR, path)).convert('L')) for path in
-                         im_path_list]
-
-        model.evaluate_map(test_dataset=dataset_test, image_list=im_list_rgb, vocabulary=class_names, with_depth=True,
-                           image_list_depth=im_list_depth)
-        # model.evaluate_map(test_dataset=dataset_test, image_list=im_list_rgb, vocabulary=class_names)
-
-        print("Finish evaluation")
-
     else:
         print("'{}' is not recognized. "
-              "Use 'train' or 'evaluate'".format(args.command))
+              "Use 'train'".format(args.command))

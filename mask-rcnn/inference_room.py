@@ -38,12 +38,6 @@ ROOT_DIR = os.getcwd()
 # Directory to save logs and trained model
 MODEL_DIR = os.path.join(ROOT_DIR, "logs")
 
-# Path to trained weights file
-# Download this file and place in the root of your
-# project (See README file for details)
-COCO_MODEL_PATH = os.path.join(ROOT_DIR, "mask_rcnn_coco.pth")
-
-
 class InferenceConfig(main.LianjiaConfig):
     # Set batch size to 1 since we'll be running inference on
     # one image at a time. Batch size = GPU_COUNT * IMAGES_PER_GPU
@@ -60,16 +54,14 @@ model = modellib.MaskRCNN(model_dir=MODEL_DIR, config=config, input_channel=3)
 if config.GPU_COUNT:
     model = model.cuda()
 
-# Load weights trained on MS-COCO
-saved_model = '/local-scratch/cjc/Lianjia-inverse-cad/mask-rcnn/logs/lianjia_dataset20180920T2038/mask_rcnn_lianjia_dataset_0069.pth'
+# Load Mask-RCNN weights trained on Lianjia dataset
+saved_model = './logs/lianjia_dataset20180920T2038/mask_rcnn_lianjia_dataset_0069.pth'
 model.load_state_dict(torch.load(saved_model))
 
 print('loaded weights from {}'.format(saved_model))
 
-# COCO Class names
-# Index of the class in the list is its ID. For example, to get ID of
-# the teddy bear class, use: class_names.index('teddy bear')
-metadata_path = '/local-scratch/cjc/Lianjia-inverse-cad/FloorNet/data/first_500/processed/room_metadata.json'
+# Read in metdata of the dataset
+metadata_path = '/local-scratch/cjc/floor-sp/data/lianjia_500/processed/room_metadata.json'
 with open(metadata_path, 'r') as f:
     metadata = json.load(f)
 label_class_map = metadata['label_room_map']
@@ -82,15 +74,18 @@ class_names = ['BG', ] + [label_class_map[str(i)] for i in label_indices]
 phase = 'test'
 data_dir = os.path.join(metadata['base_dir'], phase)
 
-# For generating room dataset
-ROOM_DATA_BASE = '/local-scratch/cjc/Lianjia-inverse-cad/FloorPlotter/data/Lianjia_room'
+# Set the base path for generating room dataset based on Mask-RCNN output
+ROOM_DATA_BASE = '/local-scratch/cjc/floor-sp/floor-sp/data/Lianjia_room'
 if not os.path.exists(ROOM_DATA_BASE):
     os.mkdir(ROOM_DATA_BASE)
 ROOM_DATA_BASE = os.path.join(ROOM_DATA_BASE, phase)
 if not os.path.exists(ROOM_DATA_BASE):
     os.mkdir(ROOM_DATA_BASE)
 
+# dir for visualization results
 VIZ_DIR = './{}_viz'.format(phase)
+if not os.path.exists(VIZ_DIR):
+    os.makedirs(VIZ_DIR)
 
 for file_idx, filename in enumerate(sorted(os.listdir(data_dir))):
     file_path = os.path.join(data_dir, filename)
@@ -125,11 +120,12 @@ for file_idx, filename in enumerate(sorted(os.listdir(data_dir))):
     # Visualize results
     r = results[0]
     
-    # read_path = '/local-scratch/cjc/Lianjia-inverse-cad/FloorPlotter/results_associate/mode_room_corner_lr_0.0001_batch_size_16/processed_preds'
+    # Control the color of generated masks by viz_colors. This is for generating consistent visualization 
+    # between masks and final reconstructed rooms. 
+    # read_path = '../floor-sp/results_associate/mode_room_corner_lr_0.0001_batch_size_16/processed_preds'
     # read_path = os.path.join(read_path, '{}_rooms_info.npy'.format(file_idx))
     # rooms_info = np.load(read_path).tolist()['rooms_info']
     # viz_colors = [info['viz_color'] for info in rooms_info]
-
 
     all_contours, all_masks, all_class_ids, room_viz_colors = visualize.display_instances(image, r['rois'], r['masks'],
                                                                                           r['class_ids'],
