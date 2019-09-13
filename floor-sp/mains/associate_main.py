@@ -19,7 +19,7 @@ from utils.floorplan_utils.floorplan_misc import visualize_rooms_info
 
 def train(configs):
     train_dataset = LianjiaAffiliationDataset(
-        data_dir='/local-scratch/cjc/Lianjia-inverse-cad/FloorPlotter/data/Lianjia_room',
+        data_dir='/local-scratch/cjc/floor-sp/floor-sp/data/Lianjia_room',
         phase='train', mode=configs.mode)
 
     train_loader = DataLoader(train_dataset, batch_size=configs.batch_size, shuffle=True)
@@ -84,7 +84,7 @@ def train(configs):
 
 def test(configs):
     test_dataset = LianjiaAffiliationDataset(
-        data_dir='/local-scratch/cjc/Lianjia-inverse-cad/FloorPlotter/data/Lianjia_room', phase='test', mode=configs.mode)
+        data_dir='/local-scratch/cjc/floor-sp/floor-sp/data/Lianjia_room', phase='test', mode=configs.mode)
     # only support bs = 1 for testing
     test_loader = DataLoader(test_dataset, batch_size=1, shuffle=False)
 
@@ -162,13 +162,15 @@ def predict(configs):
 
     model_room_corner.eval()
 
-    data_dir = '/local-scratch/cjc/Lianjia-inverse-cad/FloorPlotter/data/Lianjia_room/test'
-    corner_preds_dir = '/local-scratch/cjc/Lianjia-inverse-cad/FloorPlotter/results_corner/lr_0.0001_batch_size_4_augmentation_r_corner_edge/test_preds'
+    # Test set
+    data_dir = '/local-scratch/cjc/floor-sp/floor-sp/data/Lianjia_room/test'
+    # Corner preds on the test set
+    corner_preds_dir = '/local-scratch/cjc/floor-sp/floor-sp/results_corner/lr_0.0001_batch_size_4_augmentation_r_corner_edge/test_preds'
 
     assert len(os.listdir(data_dir)) == len(os.listdir(corner_preds_dir))
     predict_batch_size = 32
 
-    # disable gradient computation, we only feed forward-pass during inference
+    # disable gradient computation, we only do forward-pass during inference
     with torch.no_grad():
         for idx, filename in enumerate(sorted(os.listdir(data_dir))):
             file_path = os.path.join(data_dir, filename)
@@ -260,6 +262,7 @@ def predict(configs):
                 expanded_mask = binary_dilation(room_info['pred_room_mask'].astype(np.float32), iterations=expand_iter).astype(np.float32)
                 # filter the edge map using expanded mask regions, rather than using bounding box
                 room_edge_map = edge_heatmap * expanded_mask
+                # compute the edge direction histogram for the current room, this will be used for computing room dominant direction as described in the paper
                 room_edge_preds = edge_preds * np.expand_dims(expanded_mask, axis=0)
                 room_direction_hist = get_direction_hist(room_edge_preds)
 
@@ -302,7 +305,7 @@ def predict(configs):
 
 
 if __name__ == '__main__':
-    config_dict = load_config(file_path='./configs/config_associate_module.yaml')
+    config_dict = load_config(file_path='/local-scratch/cjc/floor-sp/floor-sp/configs/config_associate_module.yaml')
     configs = Struct(**config_dict)
     extra_option = configs.extra if hasattr(configs, 'extra') else None
     config_str = compose_config_str(configs, keywords=['mode', 'lr', 'batch_size'], extra=extra_option)

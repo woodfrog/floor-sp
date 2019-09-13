@@ -14,6 +14,6 @@ decay_rate: 0
 im_size: 256
 seed: 12138
 resume: True
-model_path: /local-scratch/cjc/Lianjia-inverse-cad/FloorPlotter/results_associate/mode_room_corner_lr_0.0001_batch_size_16/checkpoints/checkpoint_associate_module_3.pth.tar
+model_path: /local-scratch/cjc/floor-sp/floor-sp/results_associate/mode_room_corner_lr_0.0001_batch_size_16/checkpoints/checkpoint_associate_module_3.pth.tar
 model_path_edge: results_room_edge/lr_0.0001_batch_size_4_augmentation_r/checkpoints/checkpoint_room_edge_module_5.pth.tar
 exp_base_dir: ./results_associate

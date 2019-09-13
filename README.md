@@ -60,10 +60,10 @@ The implementation of this part is based on a public pytorch implementation of M
 The link to the pre-trained weights is [link to the pre-trained weights](https://drive.google.com/open?id=1Rb37cQd4gey2gYWvKL94VYBuRPFqJRVX). You can also find the weights for other modules of Floor-SP in the tar file.
 
 
-- `./mask-rcnn/inference_corner.py` runs pre-trained mask-rcnn for room instance segmentation and prepares the data for **corner/edge estimation** for indoor scenes.
+- `./mask-rcnn/inference_corner.py` runs pre-trained mask-rcnn for room instance segmentation and prepares the data for **corner/edge estimation** for indoor scenes. We run this on both the training and test set to prepare data for later steps.
 
 
-- `./mask-rcnn/inference_room.py` runs pre-trained mask-rcnn for room instance segmentation and prepares room-related data. The data can be used for training the room-corner association module, which predicts the affiliation between corner instance and room instance. This script also saves the labels/visualization colors of all room instances properly, which are important in generating visualization results.  
+- `./mask-rcnn/inference_room.py` runs pre-trained mask-rcnn for room instance segmentation and prepares room-related data. The data can be used for training the room-corner association module, which predicts the affiliation between corner instance and room instance. This script also saves the labels/visualization colors of all room instances properly, which are important in generating visualization results. This script is also run for both training and test set  
         
 
 ### 2. Corner/edgeness modules 

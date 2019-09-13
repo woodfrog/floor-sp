@@ -9,11 +9,8 @@ from utils.floorplan_utils.visualize import draw_final_floorplan
 import copy
 import pdb
 
-SAVE_DIR = './results_floorplan/final'
-ROUND_1 = True
 
-
-def run_roomwise_coorindate_descent(source_dir):
+def run_roomwise_coorindate_descent(source_dir, save_dir, round_1):
     for sample_idx in range(len(os.listdir(source_dir))):
         filename = '{}_rooms_info.npy'.format(sample_idx)
         file_path = os.path.join(source_dir, filename)
@@ -26,7 +23,7 @@ def run_roomwise_coorindate_descent(source_dir):
         room_labels_map = data['room_labels']
         direction_hist = data['direction_hist']
 
-        if ROUND_1:
+        if round_1:
             graph, recon_info = solve_connections(data['rooms_info'], sample_idx, density_img, direction_hist,
                                                   room_labels_map)
         else:
@@ -49,8 +46,8 @@ def run_roomwise_coorindate_descent(source_dir):
             if len(graph[corner]) != 0:
                 cv2.circle(result_img, corner, 2, (255, 0, 0), 2)
                 cv2.circle(result_img, corner, 1, (255, 255, 255), 1)
-        viz_dir = os.path.join(SAVE_DIR, 'visualization')
-        data_dir = os.path.join(SAVE_DIR, 'results')
+        viz_dir = os.path.join(save_dir, 'visualization')
+        data_dir = os.path.join(save_dir, 'results')
         # pdb.set_trace()
         if not os.path.exists(viz_dir):
             os.makedirs(viz_dir)
@@ -64,11 +61,9 @@ def run_roomwise_coorindate_descent(source_dir):
 
 
 def merge(save_dir, rooms_info_dir):
-    data_dir = '/local-scratch/cjc/Lianjia-inverse-cad/FloorPlotter/results_floorplan/final/results_round_2'
-    save_final_dir = '/local-scratch/cjc/Lianjia-inverse-cad/FloorPlotter/results_floorplan/final/output_round_2'
+    data_dir = './results_floorplan/final/results_round_2'
+    save_final_dir = './results_floorplan/final/output_round_2'
     for sample_idx in range(len(os.listdir(data_dir))):
-        if sample_idx != 38:
-            continue
         filename = '{}_recon.npy'.format(sample_idx)
         file_path = os.path.join(data_dir, filename)
         recon_info = np.load(file_path).tolist()
@@ -82,6 +77,7 @@ def merge(save_dir, rooms_info_dir):
         rooms_info_data = np.load(rooms_info_path).tolist()
         rooms_info = rooms_info_data['rooms_info']
 
+        # filter failed rooms since they cannot be visualized
         if 'failed_rooms' in recon_info and len(recon_info['failed_rooms']) != 0:
             room_class_ids = [room_class_ids[i] for i in range(len(room_class_ids)) if
                               i not in recon_info['failed_rooms']]
@@ -99,16 +95,22 @@ def merge(save_dir, rooms_info_dir):
         rooms_info = [rooms_info[i] for i in range(len(all_room_edges) + len(removed_indices)) if
                       i not in removed_indices]
 
-        # This part is modified for drawing figures for the paper, will be changed back later. 
-        hsv_path = '../mask-rcnn/hsv_viz/{}_hsv.png'.format(sample_idx)
+        # **Note**: This part is modified for drawing illustration figures for the paper, need to be changed back later. 
+        # Read in the hsv visualization for the input for better visualization
+        hsv_path = '/local-scratch/cjc/floor-sp/mask-rcnn/hsv_viz/{}_hsv.png'.format(sample_idx)
         hsv_img = imread(hsv_path)
-        for to_idx in range(7):
-            floorplan_img = draw_final_floorplan(1000, hsv_img, all_room_edges, global_graph, room_class_ids,
-                                                 room_labels_map,
-                                                 # floorplan_img = draw_final_floorplan(1000, hsv_img, raw_room_edges, global_graph, room_class_ids, room_labels_map,
-                                                 room_viz_colors, flip_y=True, to_idx=to_idx, rooms_info=rooms_info)
-            imsave('supple/step_{}.png'.format(to_idx), floorplan_img)
-        return
+        
+        # draw step by step(room by room) illustration
+        # for to_idx in range(7):
+        #     floorplan_img = draw_final_floorplan(1000, hsv_img, all_room_edges, global_graph, room_class_ids,
+        #                                          room_labels_map,
+        #                                          # floorplan_img = draw_final_floorplan(1000, hsv_img, raw_room_edges, global_graph, room_class_ids, room_labels_map,
+        #                                          room_viz_colors, flip_y=True, to_idx=to_idx, rooms_info=rooms_info)
+        #     imsave('supple/step_{}.png'.format(to_idx), floorplan_img)
+        # return
+
+
+		floorplan_img = draw_final_floorplan(1000, hsv_img, all_room_edges, global_graph, room_class_ids, room_labels_map, room_viz_colors, flip_y=True)
         result_img = np.zeros([256, 256, 3])
         result_img += np.stack([density_img] * 3, axis=-1) * 255
 
@@ -143,7 +145,10 @@ def merge(save_dir, rooms_info_dir):
 
 
 if __name__ == '__main__':
-    DIR = '/local-scratch/cjc/Lianjia-inverse-cad/FloorPlotter/results_associate/heuristic_based_association/processed_preds'
-    run_roomwise_coorindate_descent(source_dir=DIR)
+    DIR = '/local-scratch/cjc/floor-sp/floor-sp/results_associate/heuristic_based_association/processed_preds'
+    SAVE_DIR = '/local-scratch/cjc/floor-sp/floor-sp/results_floorplan/final'
+    ROUND_1 = True
+    run_roomwise_coorindate_descent(source_dir=DIR, save_dir=SAVE_DIR, round_1=ROUND_1)
 
+    # Run the merging givne the output(e.g. a set of rooms) from the room-wise coordinate descent.
     # merge(save_dir='./results_floorplan/final', rooms_info_dir=DIR)

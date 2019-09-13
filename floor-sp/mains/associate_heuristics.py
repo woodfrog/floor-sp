@@ -18,8 +18,10 @@ def room_corner_association(configs):
     if not os.path.exists(save_dir):
         os.makedirs(save_dir)
 
-    data_dir = '/local-scratch/cjc/Lianjia-inverse-cad/FloorPlotter/data/Lianjia_room/test'
-    corner_preds_dir = '/local-scratch/cjc/Lianjia-inverse-cad/FloorPlotter/results_corner/lr_0.0001_batch_size_4_augmentation_r_corner_edge/test_preds'
+    # Test set
+    data_dir = '/local-scratch/cjc/floor-sp/floor-sp/data/Lianjia_room/test'
+    # The path to corner preds on test set
+    corner_preds_dir = '/local-scratch/cjc/floor-sp/floor-sp/results_corner/lr_0.0001_batch_size_4_augmentation_r_corner_edge/test_preds'
 
     assert len(os.listdir(data_dir)) == len(os.listdir(corner_preds_dir))
 
@@ -74,6 +76,7 @@ def room_corner_association(configs):
             room_corner_heatmap = get_room_heatmap(room_corners, corner_preds_heatmap, mode='corner')
             # filter the edge map using expanded mask regions, rather than using bounding box
             room_edge_map = edge_heatmap * expanded_mask
+            # compute the edge direction histogram for the current room, this will be used for computing room dominant direction as described in the paper
             room_edge_preds = edge_preds * np.expand_dims(expanded_mask, axis=0)
             room_direction_hist = get_direction_hist(room_edge_preds)
 

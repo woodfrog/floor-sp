@@ -21,7 +21,7 @@ import pdb
 
 def train(configs):
     train_dataset = LianjiaCornerDataset(
-        data_dir='/local-scratch/cjc/Lianjia-inverse-cad/FloorPlotter/data/Lianjia_corner',
+        data_dir='/local-scratch/cjc/floor-sp/floor-sp/data/Lianjia_corner',
         phase='train', augmentation=configs.augmentation)  # use rotation for augmentation
 
     train_loader = DataLoader(train_dataset, batch_size=configs.batch_size, shuffle=True)
@@ -83,7 +83,7 @@ def train(configs):
 def predict_corners(configs):
     predict_phase = 'test'
     predict_dataset = LianjiaCornerDataset(
-        data_dir='/local-scratch/cjc/Lianjia-inverse-cad/FloorPlotter/data/Lianjia_corner', phase=predict_phase,
+        data_dir='/local-scratch/cjc/floor-sp/floor-sp/data/Lianjia_corner', phase=predict_phase,
         augmentation='')
     # only support bs = 1 for testing
     predict_loader = DataLoader(predict_dataset, batch_size=1, shuffle=False)
@@ -169,7 +169,7 @@ def predict_corners(configs):
 
 
 if __name__ == '__main__':
-    config_dict = load_config(file_path='./configs/config_cornernet.yaml')
+    config_dict = load_config(file_path='/local-scratch/cjc/floor-sp/floor-sp/configs/config_cornernet.yaml')
     configs = Struct(**config_dict)
     extra_option = configs.extra if hasattr(configs, 'extra') else None
     config_str = compose_config_str(configs, keywords=['lr', 'batch_size', 'augmentation'], extra=extra_option)
