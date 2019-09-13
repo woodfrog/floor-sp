@@ -94,11 +94,10 @@ class LianjiaRoomDataset(Dataset):
 
 
 if __name__ == '__main__':
-    dataset = LianjiaRoomDataset(data_dir='/local-scratch/cjc/Lianjia-inverse-cad/FloorPlotter/data/Lianjia_room',
+    dataset = LianjiaRoomDataset(data_dir='/local-scratch/cjc/floor-sp/floor-sp/data/Lianjia_room',
                                  phase='train')
 
-    # currently only support batch_size = 1
-    data_loader = DataLoader(dataset, batch_size=1)
+    data_loader = DataLoader(dataset, batch_size=4)
 
     for idx, batch_data in enumerate(data_loader):
         pdb.set_trace()

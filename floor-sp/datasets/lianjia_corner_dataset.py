@@ -101,9 +101,8 @@ class LianjiaCornerDataset(Dataset):
 
 if __name__ == '__main__':
     dataset = LianjiaCornerDataset(
-        data_dir='/local-scratch/cjc/Lianjia-inverse-cad/FloorPlotter/data/Lianjia_corner', phase='train', augmentation='r')
+        data_dir= '/local-scratch/cjc/floor-sp/floor-sp/data/Lianjia_corner', phase='train', augmentation='r')
 
-    # currently only support batch_size = 1
     data_loader = DataLoader(dataset, batch_size=1)
 
     for idx, batch_data in enumerate(data_loader):

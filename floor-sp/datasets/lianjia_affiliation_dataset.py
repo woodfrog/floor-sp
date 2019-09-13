@@ -73,7 +73,6 @@ class LianjiaAffiliationDataset(Dataset):
                 for room_idx, room_info in enumerate(room_data):
                     if room_info['gt_room_mask'] is None:
                         continue
-                    
                     for corner_idx, corner in enumerate(room_info['room_corners']):
                         next_idx = 0 if corner_idx == len(room_info['room_corners']) - 1 else corner_idx + 1
                         adjacent_corners = (room_info['room_corners'][corner_idx - 1], room_info['room_corners'][next_idx])
@@ -249,11 +248,10 @@ class LianjiaAffiliationDataset(Dataset):
 
 
 if __name__ == '__main__':
-    dataset = LianjiaAffiliationDataset(data_dir='/local-scratch/cjc/Lianjia-inverse-cad/FloorPlotter/data/Lianjia_room',
+    dataset = LianjiaAffiliationDataset(data_dir='/local-scratch/cjc/floor-sp/floor-sp/data/Lianjia_room',
                                         phase='train', mode='room_corner')
 
-    # currently only support batch_size = 1
-    data_loader = DataLoader(dataset, batch_size=1)
+    data_loader = DataLoader(dataset, batch_size=4)
 
     for idx, batch_data in enumerate(data_loader):
         pdb.set_trace()
