@@ -143,7 +143,6 @@ def predict(configs):
     model_room_corner = CornerRoomAssociate(im_size=256, configs=configs)
     model_room_corner.double()
 
-
     if configs.model_path:
         checkpoint = torch.load(configs.model_path)
         model_room_corner.load_state_dict(checkpoint['state_dict'])
@@ -187,7 +186,7 @@ def predict(configs):
             corner_preds_heatmap = corner_preds['corner_heatmap']
             edge_preds = corner_preds['edge_preds']
             edge_heatmap = edge_preds[0]
-            global_direction_hist= corner_preds['direction_hist']
+            global_direction_hist = corner_preds['direction_hist']
 
             vectorized_rooms_info = list()
             # iterate through rooms of the scene
@@ -259,7 +258,8 @@ def predict(configs):
                     expand_iter = 10
                 else:
                     expand_iter = 20
-                expanded_mask = binary_dilation(room_info['pred_room_mask'].astype(np.float32), iterations=expand_iter).astype(np.float32)
+                expanded_mask = binary_dilation(room_info['pred_room_mask'].astype(np.float32),
+                                                iterations=expand_iter).astype(np.float32)
                 # filter the edge map using expanded mask regions, rather than using bounding box
                 room_edge_map = edge_heatmap * expanded_mask
                 # compute the edge direction histogram for the current room, this will be used for computing room dominant direction as described in the paper

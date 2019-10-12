@@ -27,7 +27,7 @@ def train(configs):
     train_loader = DataLoader(train_dataset, batch_size=configs.batch_size, shuffle=True)
 
     model = CornerEdgeNet(num_input_channel=5, base_pretrained=False, bin_size=36,
-                      im_size=256, configs=configs)
+                          im_size=256, configs=configs)
     model.double()
 
     criterion = nn.BCEWithLogitsLoss(reduce=False)
@@ -89,7 +89,7 @@ def predict_corners(configs):
     predict_loader = DataLoader(predict_dataset, batch_size=1, shuffle=False)
 
     model = CornerEdgeNet(num_input_channel=5, base_pretrained=False, bin_size=36,
-                      im_size=256, configs=configs)
+                          im_size=256, configs=configs)
     model.double()
 
     if configs.model_path:
@@ -156,7 +156,8 @@ def predict_corners(configs):
                 if not os.path.exists(dump_dir):
                     os.makedirs(dump_dir)
                 for pred_idx, pred_item in enumerate(vectorized_preds):  # keep the full binning information
-                    vectorized_preds[pred_idx]['binning'] = corner_preds[1:, pred_item['corner'][1], pred_item['corner'][0]]
+                    vectorized_preds[pred_idx]['binning'] = corner_preds[1:, pred_item['corner'][1],
+                                                            pred_item['corner'][0]]
                 dump_path = os.path.join(dump_dir, '{}_corner_preds.npy'.format(idx))
                 dump_data = {
                     'vectorized_preds': vectorized_preds,

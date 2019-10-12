@@ -7,6 +7,7 @@ from utils.floorplan_utils.cores import solve_connections
 from utils.floorplan_utils.merge import merge_room_graphs
 from utils.floorplan_utils.visualize import draw_final_floorplan
 import copy
+
 import pdb
 
 
@@ -86,7 +87,8 @@ def merge(save_dir, rooms_info_dir):
             rooms_info = [rooms_info[i] for i in range(len(room_viz_colors)) if i not in recon_info['failed_rooms']]
 
         raw_room_edges = copy.deepcopy(dp_room_edges)
-        global_graph, all_room_edges, all_room_masks, all_room_paths, removed_indices = merge_room_graphs(raw_room_edges)
+        global_graph, all_room_edges, all_room_masks, all_room_paths, removed_indices = merge_room_graphs(
+            raw_room_edges)
 
         room_class_ids = [room_class_ids[i] for i in range(len(all_room_edges) + len(removed_indices)) if
                           i not in removed_indices]
@@ -99,7 +101,7 @@ def merge(save_dir, rooms_info_dir):
         # Read in the hsv visualization for the input for better visualization
         hsv_path = '/local-scratch/cjc/floor-sp/mask-rcnn/hsv_viz/{}_hsv.png'.format(sample_idx)
         hsv_img = imread(hsv_path)
-        
+
         # draw step by step(room by room) illustration
         # for to_idx in range(7):
         #     floorplan_img = draw_final_floorplan(1000, hsv_img, all_room_edges, global_graph, room_class_ids,
@@ -109,8 +111,8 @@ def merge(save_dir, rooms_info_dir):
         #     imsave('supple/step_{}.png'.format(to_idx), floorplan_img)
         # return
 
-
-		floorplan_img = draw_final_floorplan(1000, hsv_img, all_room_edges, global_graph, room_class_ids, room_labels_map, room_viz_colors, flip_y=True)
+        floorplan_img = draw_final_floorplan(1000, hsv_img, all_room_edges, global_graph, room_class_ids,
+                                             room_labels_map, room_viz_colors, flip_y=True)
         result_img = np.zeros([256, 256, 3])
         result_img += np.stack([density_img] * 3, axis=-1) * 255
 
@@ -150,5 +152,5 @@ if __name__ == '__main__':
     ROUND_1 = True
     run_roomwise_coorindate_descent(source_dir=DIR, save_dir=SAVE_DIR, round_1=ROUND_1)
 
-    # Run the merging givne the output(e.g. a set of rooms) from the room-wise coordinate descent.
+    # Run the merging given the output(e.g. a set of rooms) from the room-wise coordinate descent.
     # merge(save_dir='./results_floorplan/final', rooms_info_dir=DIR)
