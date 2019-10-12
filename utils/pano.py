@@ -1,5 +1,8 @@
+"""
+    A script for generating RGB panoramas for every camera localtion.
+"""
 import os.path as osp
-from data_utils import get_extrinsics
+from data_preprocess import get_extrinsics
 import numpy as np
 import cv2
 import math
@@ -25,13 +28,13 @@ def pano_stitching(image_dir, camera_extrinsics):
 	pano = np.zeros([PANO_HEIGHT, PANO_WIDTH, 3], dtype='uint8')
 	count = np.zeros([PANO_HEIGHT, PANO_WIDTH])
 
-	for i, extrinsic in enumerate(camera_extrinsics):
+	for ext_i, extrinsic in enumerate(camera_extrinsics):
 		extrinsic = np.linalg.inv(extrinsic)
-		file_name = '{:02d}.jpg'.format(i)
+		file_name = '{:02d}.jpg'.format(ext_i)
 		file_path = osp.join(image_dir, file_name)
 		sub_im = cv2.imread(file_path)
 		im_size = sub_im.shape
-		print('processing image.{}'.format(i))
+		print('processing image.{}'.format(ext_i))
 
 		pano_i = np.array([[j for _ in range(PANO_WIDTH)] for j in range(PANO_HEIGHT)])  # height direction
 		pano_j = np.array([[i for i in range(PANO_WIDTH)] for _ in range(PANO_HEIGHT)])  # width direction
@@ -60,8 +63,8 @@ def pano_stitching(image_dir, camera_extrinsics):
 		# PlyData([vertex_el]).write('./demo/derived/0/debug.ply')  # write the new ply file
 		# -------------------
 
-		camera_intrinsic = get_camera_intrinsics_mat(*CAMERA_PARAMETERS[i % 3])
-		print('intrinsic index : {}'.format(i % 3))
+		camera_intrinsic = get_camera_intrinsics_mat(*CAMERA_PARAMETERS[ext_i % 3])
+		print('intrinsic index : {}'.format(ext_i % 3))
 
 		camera_matrix = np.matmul(camera_intrinsic, extrinsic)
 
@@ -78,7 +81,7 @@ def pano_stitching(image_dir, camera_extrinsics):
 			else:
 				continue
 
-		cv2.imwrite('./demo/derived/0/pano_step_{}.png'.format(i), pano)
+		cv2.imwrite('./demo/derived/0/pano_step_{}.png'.format(ext_i), pano)
 
 
 

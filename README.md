@@ -31,7 +31,7 @@ If you find the paper and the code helpful, please consider citing our paper:
 
 ```
 
-The data will be release by Beike(www.ke.com), the link will be provided soon.
+The data will be release by Beike(www.ke.com) around Nov 2019, the link will be provided here after that.
 
 
 ## Data preprocessing
