@@ -47,13 +47,6 @@ repository and longcw's [RoiAlign](https://github.com/longcw/RoIAlign.pytorch).
     
 3. Download the pretrained models on COCO and ImageNet from [Google Drive](https://drive.google.com/open?id=1LXUgC2IZUYNEoXr05tdqyKFZY0pZyPDc).
 
-## Demo
-
-To test your installation simply run the demo with
-
-    python demo.py
-
-
 
 ## Training
 Training and evaluation code is in main.py. You can run it from the command
