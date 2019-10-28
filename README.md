@@ -2,6 +2,7 @@
 
 ## Contents
 1. [Overview](#overview)
+2. [Data download](#data-download)
 2. [Data preprocessing](#data-preprocessing)
 3. [Floor-SP](#Floor-SP)
 	- [Mask-RCNN](#1-mask-rcnn)
@@ -31,7 +32,12 @@ If you find the paper and the code helpful, please consider citing our paper:
 
 ```
 
-The data will be release by Beike(www.ke.com) around Nov 2019, the link will be provided here. We will then provide a more detailed instruction on how to process the data and get output from Floor-SP.
+## Data download
+
+~~The data will be release by Beike(www.ke.com) around Nov 2019, the link will be provided here. We will then provide a more detailed instruction on how to process the data and get output from Floor-SP.~~
+
+**Oct 28**: 100 complete house scans have been released by Beike ([www.ke.com](https://www.ke.com)) at this [link](http://realsee.com/open/en). Please fill the form and download the data from Beike. A more detailed guideline on the data format will be provided soon. The 100 scans include the test set used in our paper, the IDs of the test scenes are provided in `./data/test_ids.txt`. We will also provide a detailed step-by-step instruction on running Floor-SP on the released data.
+
 
 
 ## Data preprocessing

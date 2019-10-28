@@ -42,8 +42,9 @@ This paper proposes a new approach for automated floorplan reconstruction from R
 
 # Code / Data
 
-Check our code on our [Github repo](https://github.com/woodfrog/floor-sp). The test split of the dataset will be released by Beike ([www.ke.com](https://www.ke.com)) around Nov 2019, which contains scanning and annotations of ~100 houses. The link will be provided here. We will then provide a more detailed instruction on running Floor-SP on the released data.
+Check our code on our [Github repo](https://github.com/woodfrog/floor-sp). 
 
+**Update on Oct 28**: 100 complete house scans have been released by Beike ([www.ke.com](https://www.ke.com)) at this [link](http://realsee.com/open/en). Please fill the form and download the data from Beike. A more detailed guideline on the data format will be provided soon. The 100 scans include the test set used in our paper, the IDs of the test scenes are provided in the Github repo. We will also provide a detailed step-by-step instruction on running Floor-SP on the released data.
 
 
 # Acknowledgement
