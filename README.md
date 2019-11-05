@@ -4,7 +4,7 @@
 1. [Overview](#overview)
 2. [Data download](#data-download)
 2. [Data preprocessing](#data-preprocessing)
-3. [Floor-SP](#Floor-SP)
+3. [Floor-SP](#floor-SP)
 	- [Mask-RCNN](#1-mask-rcnn)
 	- [corner/edgeness modules](#2-corneredgeness-modules)
 	- [Sequential room-wise shortest path ](#3-sequential-room-wise-shortest-path)
@@ -36,14 +36,14 @@ If you find the paper and the code helpful, please consider citing our paper:
 
 ~~The data will be release by Beike(www.ke.com) around Nov 2019, the link will be provided here. We will then provide a more detailed instruction on how to process the data and get output from Floor-SP.~~
 
-**Oct 28**: 100 complete house scans have been released by Beike ([www.ke.com](https://www.ke.com)) at this [link](http://realsee.com/open/en). Please fill the form and download the data from Beike. A more detailed guideline on the data format will be provided soon. The 100 scans include the test set used in our paper, the IDs of the test scenes are provided in `./data/test_ids.txt`. We will also provide a detailed step-by-step instruction on running Floor-SP on the released data.
+**Oct 28**: 100 complete house scans have been released by Beike ([www.ke.com](https://www.ke.com)) at this [link](http://realsee.com/open/en). Beike will send the data links via email after you fill out the form. A more detailed guideline on the data format will be provided soon. The 100 scans include the test set used in our paper, the IDs of the test scenes are provided in [data/test_ids.txt](https://github.com/woodfrog/floor-sp/blob/master/data/test_ids.txt). We will also provide a detailed step-by-step instruction on running Floor-SP on the released data.
 
 To prepare the data, first fill the form on Beike's website to get the email containing the download links. Download the email from Beike and save the html file into ./data/email.html. Then run `./data/downloa.sh` to download all the 100 data and unzip them automatically:
 
 ```
-    cd data
-    sh download.sh
-    cd ..
+cd data
+sh download.sh
+cd ..
 ```
 
 
@@ -97,7 +97,7 @@ Detailed instructions can be checked in `./floor-sp/README.md`.
 ### 3. Sequential room-wise shortest path 
 We devise **the room-wise coordinate descent strategy (sequential room-wise shortest path)** to optimize room structures for the floorplan. (details are in `./floor-sp/utils/floorplan_utils/`)
 
-**Room-wise coordinate descent** solves the **room-aware floorplan reconstruction**, an energy minimization problem, by using dynamic programming as the solver. The paper [Piecewise Planar and Compact Floorplan Reconstruction from Images](https://dl.acm.org/citation.cfm?id=2679884) [1] uses shortest path algorithm to find an optimal global floorplan (actually an outer-most boundary) for an indoor space. Following this idea, our room-wise coordinate descent runs shortest path algorithm iteratively to solve the optimal per-room structure. The rooms are processed sequentially and there could be multiple rounds of optimization just as in traditional coordinate descent. 
+**Room-wise coordinate descent** solves the **room-aware floorplan reconstruction**, an energy minimization problem, by using a shortest path algorithm as the solver. The paper [Piecewise Planar and Compact Floorplan Reconstruction from Images](https://dl.acm.org/citation.cfm?id=2679884) [1] uses shortest path algorithm to find an optimal global floorplan (actually an outer-most boundary) for an indoor space. Following this idea, our room-wise coordinate descent runs shortest path algorithm iteratively to solve the optimal per-room structure. The rooms are processed sequentially and there could be multiple rounds of optimization just as in traditional coordinate descent. 
 
 The energy minimization problem is established using room instance segmentations, room corner likelihood maps and room edge likelihood maps that we generated in previous parts of Floor-SP. **`./floor-sp/mains/extract_floorplan.py` is the script for running room-wise coordinate descent, together with room merging and the final visualization**. The algorithm related code can be found in `./floor-sp/utils/floorplan_utils`. 
 
@@ -116,16 +116,15 @@ move all edges to that place. This simpler implementation works well for non-pro
 
 ## Environment Setup
 
-The implementation is based on Python3.5 and Pytorch0.4.0. The file [**requirements.txt**](https://github.com/woodfrog/Lianjia-inverse-cad/blob/master/requirements.txt) contains related packages and their corresponding versions in the environment for running the whole Floor-SP. You can do `pip install -r requirements.txt` to install all of them. 
+The implementation is based on Python3.5 and Pytorch0.4.0. The file [**requirements.txt**](https://github.com/woodfrog/floor-sp/blob/master/requirements.txt) contains related packages and their corresponding versions in the environment for running the whole Floor-SP. You can do `pip install -r requirements.txt` to install all of them. 
 
-**Notice**: We need Tensorflow to run the RecordWriter in ./FloorNet during data pre-processing, tensorflow-gpu==1.4.0 was used but any version >=1.4.0 should also work. A separate data writer for Floor-SP only could be implemented so that the data writer does not rely on Tensorflow. 
 
 ### Algorithm Dependencies
 
 Floor-SP makes use of several algorithms/models to build up the whole
 floorplan reconstruction system, they are listed as follows:
 
-- Dynamic programming in a 2-D grid for solving an optimal structure [1], based
+- Running shortest path algorithm in a 2-D grid for solving an optimal structure [1], based
   on which we designd the room-wise coordinate descent algorithm.
 
 - Mask-RCNN for getting room instance segmentations [3].
