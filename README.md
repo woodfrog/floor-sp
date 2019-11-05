@@ -18,7 +18,7 @@
 
 This is the official implementation of the paper [Floor-SP: Inverse CAD for Floorplans by Sequential Room-wise Shortest Path](https://arxiv.org/abs/1908.06702), published on ICCV 2019.  
 
-Floor-SP takes aligned RGBD scans of an indoor space as the input and produces floorplan estimation. The overall pipeline consists of 1) Data pre-processing and 2) Running Floor-SP. Detailed steps will be explained in following sections.
+Floor-SP takes aligned RGBD scans of an indoor space as the input, converts the input into 2D top-view images, and produces floorplan estimation. Detailed steps will be explained in following sections.
 
 If you find the paper and the code helpful, please consider citing our paper:
 
@@ -38,6 +38,13 @@ If you find the paper and the code helpful, please consider citing our paper:
 
 **Oct 28**: 100 complete house scans have been released by Beike ([www.ke.com](https://www.ke.com)) at this [link](http://realsee.com/open/en). Please fill the form and download the data from Beike. A more detailed guideline on the data format will be provided soon. The 100 scans include the test set used in our paper, the IDs of the test scenes are provided in `./data/test_ids.txt`. We will also provide a detailed step-by-step instruction on running Floor-SP on the released data.
 
+To prepare the data, first fill the form on Beike's website to get the email containing the download links. Download the email from Beike and save the html file into ./data/email.html. Then run `./data/downloa.sh` to download all the 100 data and unzip them automatically:
+
+```
+    cd data
+    sh download.sh
+    cd ..
+```
 
 
 ## Data preprocessing
