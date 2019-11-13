@@ -12,5 +12,6 @@ mkdir raws
 cd ..
 python download_from_email.py
 cd public_100
+cp ../unzip_all.sh ./
 sh unzip_all.sh
 cd ..

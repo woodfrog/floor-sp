@@ -68,12 +68,12 @@ def visualize_camera_center(extrinsics, output_path):
     # 		f.write(' '.join(coord_s) + '\n')
 
 
-def pc_transfrom(read_file, pc_file, trans_matrix, downsample=True, write_output=False, out_path=None):
+def pc_transform(read_file, pc_file, trans_matrix, downsample=True, write_output=False, out_path=None):
     if read_file:
         with open(pc_file, 'rb') as f:
             plydata = PlyData.read(f)
             dtype = plydata['vertex'].data.dtype
-        print('dtype: {}'.format(dtype))
+        #print('dtype: {}'.format(dtype))
 
         data = np.array(plydata['vertex'].data.tolist())
     else:
@@ -113,12 +113,15 @@ def pc_transfrom(read_file, pc_file, trans_matrix, downsample=True, write_output
 
 def merge_point_clouds(base_dir, out_path=None, adjustment=False):
     print('merging point clouds for dir {}'.format(base_dir))
-    extrinsics_path = osp.join(base_dir, 'final_extrinsics.txt')
+    extrinsics_path = osp.join(base_dir, 'extrinsics.txt')
     extrinsics = get_extrinsics(extrinsics_path)
     all_pc = list()
+    with open(os.path.join(base_dir, 'aligned.txt')) as f:
+        sub_ids = [x.strip() for x in f.readlines()]
+
     for location_i, extrinsic in enumerate(extrinsics):
-        ply_path = osp.join(base_dir, 'derived/{}/output.ply'.format(location_i))
-        transformed_pc = pc_transfrom(read_file=True, pc_file=ply_path, trans_matrix=extrinsic)
+        ply_path = osp.join(base_dir, 'derived/{}/output.ply'.format(sub_ids[location_i]))
+        transformed_pc = pc_transform(read_file=True, pc_file=ply_path, trans_matrix=extrinsic, downsample=True)
         all_pc.append(transformed_pc)
 
     all_pc = np.concatenate(all_pc, axis=0)
@@ -128,7 +131,7 @@ def merge_point_clouds(base_dir, out_path=None, adjustment=False):
                                      [0, -1, 0, 0],
                                      [0, 0, 0, 1]])
 
-    all_pc = pc_transfrom(read_file=False, pc_file=all_pc, trans_matrix=adjustment_trans_mat, downsample=False)
+    all_pc = pc_transform(read_file=False, pc_file=all_pc, trans_matrix=adjustment_trans_mat, downsample=False)
 
     vertex_el = PlyElement.describe(all_pc, 'vertex')
 
@@ -140,9 +143,11 @@ def merge_point_clouds(base_dir, out_path=None, adjustment=False):
 
 def process_annot(dir_path, out_path):
     dir_name = osp.basename(dir_path)
-    file_path = osp.join(dir_path, dir_name + '.json')
+    file_path = osp.join(dir_path, 'floorplan.json')
     with open(file_path, 'r') as f:
-        data = json.load(f)[0]
+        data = json.load(f)['floorplans']
+        assert len(data) >= 1
+        data = data[0]  # the first element is the default floorplan annotation
 
     points = data['points']
     lines = data['lines']
@@ -382,13 +387,6 @@ def get_direction(pt_xy, other_xy, EPSILON=0.2):
     return direction
 
 
-def dump_log(base_dir, error_list):
-    log_path = osp.join(base_dir, 'log.txt')
-    with open(log_path, 'w') as f:
-        for error_name in error_list:
-            f.write('error encountered in processing {} \n'.format(error_name))
-
-
 if __name__ == '__main__':
     # Validate the given data by visualizing camera centers and transform point clouds 
     # extrinsics = get_extrinsics(EXTRINSICS_PATH)
@@ -399,25 +397,27 @@ if __name__ == '__main__':
     	# pc_transfrom(input_path, extrinsic_mat, target_path)
 
     # Pre-processing: generate global point clouds + parse annotations (with some simple cleaning on the annotations)
-    base_dir = '/local-scratch/cjc/Lianjia-inverse-cad/FloorNet/data/nonm_500/raw'
-    out_base = '/local-scratch/cjc/Lianjia-inverse-cad/FloorNet/data/nonm_500/processed'
+    base_dir = '../data/public_100/raws'
+    out_base = '../data/public_100/processed'
     out_base_ply = osp.join(out_base, 'ply')
     out_base_json = osp.join(out_base, 'json')
+    if not os.path.exists(out_base_ply):
+        os.makedirs(out_base_ply)
+    if not os.path.exists(out_base_json):
+        os.makedirs(out_base_json)
 
-    error_list = list()
-    for dir_name in os.listdir(base_dir):
+    for dir_name in sorted(os.listdir(base_dir)):
         file_path = osp.join(base_dir, dir_name)
         filename_no_ext, _ = osp.splitext(dir_name)
         out_path_ply = osp.join(out_base_ply, filename_no_ext + '.ply')
         out_path_json = osp.join(out_base_json, filename_no_ext + '.json')
-        annot_path = osp.join(file_path, dir_name + '.json')
+        annot_path = osp.join(file_path, 'floorplan.json')
         if not os.path.exists(annot_path):
             print('{} does not contain annotation!'.format(dir_name))
             continue
-        if os.path.exists(out_path_ply):
+        if os.path.exists(out_path_ply) and os.path.exists(out_path_json):
             print('skip {}, it exists already'.format(dir_name))
             continue
         merge_point_clouds(file_path, out_path_ply)
         process_annot(file_path, out_path_json)
 
-    dump_log(base_dir=out_base, error_list=error_list)

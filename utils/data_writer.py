@@ -1,3 +1,10 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+# File              : data_writer.py
+# Author            : Jiacheng Chen <cjc0722hz@gmail.com>
+# Date              : 05.11.2019
+# Last Modified Date: 05.11.2019
+# Last Modified By  : Jiacheng Chen <cjc0722hz@gmail.com>
 import os
 import cv2
 import numpy as np
@@ -238,7 +245,7 @@ def write_scene_pc(points, output_path):
 
 
 class RecordWriter:
-    def __init__(self, num_points, base_dir, phase, im_size, save_prefix, allow_non_man=False, extra_test=None):
+    def __init__(self, num_points, base_dir, phase, im_size, save_prefix, allow_non_man=False, extra_test=None, all_test=False):
         self.num_points = num_points
         self.base_dir = base_dir
         self.ply_base_dir = os.path.join \
@@ -250,6 +257,8 @@ class RecordWriter:
         self.extra_test = extra_test
 
         self.train_test_split = 0.9
+        if all_test:
+            self.train_test_split = 0
         self.gap = 3
 
         self.ply_paths, self.annot_paths = self.get_filepaths()
@@ -407,10 +416,18 @@ class RecordWriter:
         for corner_id, type in corner_type_map.items():
             if point_dict[corner_id]['img_x'] >= self.im_size or point_dict[corner_id]['img_x'] < 0 or \
                             point_dict[corner_id]['img_y'] >= self.im_size or point_dict[corner_id]['img_y'] < 0:
-                err_msg = 'corner out of image boundary due to small point density'
+                err_msg = 'corner out of image boundary due to small point density in {}'.format(ply_path)
+                if point_dict[corner_id]['img_x'] >= self.im_size:
+                    point_dict[corner_id]['img_x'] = self.im_size-1
+                if point_dict[corner_id]['img_x'] < 0:
+                    point_dict[corner_id]['img_x'] = 0
+                if point_dict[corner_id]['img_y'] >= self.im_size:
+                    point_dict[corner_id]['img_y'] = self.im_size-1
+                if point_dict[corner_id]['img_y'] < 0:
+                    point_dict[corner_id]['img_y'] = 0
                 print(err_msg)
                 self.log_lines.append(err_msg)
-                return False, None
+                #return False, None
 
         # Prepare room segmentation map, get the label for every room
         room_segmentation = np.zeros((self.im_size, self.im_size), dtype=np.uint8)
@@ -452,7 +469,7 @@ class RecordWriter:
             if room_idx == wall_idx or room_idx == bg_idx:
                 error_line = 'Data error: the room label is the same as bg or wall, in {}'.format(ply_path)
                 self.log_lines.append(error_line)
-                return False, None
+                #return False, None
             if room_idx in room_label_map:
                 error_line = 'the room idx {} is encourted multiple times, in {}'.format(room_idx, ply_path)
                 self.log_lines.append(error_line)
@@ -472,11 +489,11 @@ class RecordWriter:
         filename, _ = os.path.splitext(os.path.basename(ply_path))
         # write_scene_pc(points, './debug/{}.ply'.format(filename))
         density_img = drawDensityImage(getDensity(points=points))
-        cv2.imwrite('./debug_nonm/{}_density.png'.format(filename), density_img)
+        cv2.imwrite('./data_check/{}_density.png'.format(filename), density_img)
 
         density_img = np.stack([density_img] * 3, axis=2)
         _, annot_image = self.parse_annot(annot_path, mins, max_range, draw_img=True, img=density_img)
-        cv2.imwrite('./debug_nonm/{}_annot.png'.format(filename), annot_image)
+        cv2.imwrite('./data_check/{}_annot.png'.format(filename), annot_image)
 
         topview_image = drawDensityImage(topview_points[:, :, -1], nChannels=3)
         room_data = {
@@ -645,10 +662,7 @@ class RecordWriter:
 
 
 if __name__ == '__main__':
-    base_dir = '../data/lianjia_500/processed'
-    extra_test_dir = '../data/extra_test/processed'
-    record_writer = RecordWriter(num_points=50000, base_dir=base_dir, phase='train', im_size=256, save_prefix='Lianjia_nonM', allow_non_man=True)
-    record_writer.write()
+    base_dir = '../data/public_100/processed'
     record_writer_test = RecordWriter(num_points=50000, base_dir=base_dir, phase='test', im_size=256,
-                                      save_prefix='Lianjia_nonM', allow_non_man=True, extra_test=extra_test_dir)
+                                      save_prefix='beike_100', allow_non_man=True, all_test=True)
     record_writer_test.write()
