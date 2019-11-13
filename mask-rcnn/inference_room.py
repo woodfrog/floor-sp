@@ -55,13 +55,13 @@ if config.GPU_COUNT:
     model = model.cuda()
 
 # Load Mask-RCNN weights trained on Lianjia dataset
-saved_model = './logs/lianjia_dataset20180920T2038/mask_rcnn_lianjia_dataset_0069.pth'
+saved_model = './logs/mask_rcnn_lianjia_dataset_0069.pth'
 model.load_state_dict(torch.load(saved_model))
 
 print('loaded weights from {}'.format(saved_model))
 
 # Read in metdata of the dataset
-metadata_path = '/local-scratch/cjc/floor-sp/data/lianjia_500/processed/room_metadata.json'
+metadata_path = '../data/public_100/processed/room_metadata.json'
 with open(metadata_path, 'r') as f:
     metadata = json.load(f)
 label_class_map = metadata['label_room_map']
@@ -75,12 +75,12 @@ phase = 'test'
 data_dir = os.path.join(metadata['base_dir'], phase)
 
 # Set the base path for generating room dataset based on Mask-RCNN output
-ROOM_DATA_BASE = '/local-scratch/cjc/floor-sp/floor-sp/data/Lianjia_room'
+ROOM_DATA_BASE = '../floor-sp/data/dataset_room'
 if not os.path.exists(ROOM_DATA_BASE):
-    os.mkdir(ROOM_DATA_BASE)
+    os.makedirs(ROOM_DATA_BASE)
 ROOM_DATA_BASE = os.path.join(ROOM_DATA_BASE, phase)
 if not os.path.exists(ROOM_DATA_BASE):
-    os.mkdir(ROOM_DATA_BASE)
+    os.makedirs(ROOM_DATA_BASE)
 
 # dir for visualization results
 VIZ_DIR = './{}_viz'.format(phase)

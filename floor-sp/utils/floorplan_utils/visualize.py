@@ -80,7 +80,8 @@ def draw_final_floorplan(scale, input_img, all_room_edges, global_graph, room_id
 
     ## Draw density image on the floorplan visualization
     input_img = np.flipud(input_img)
-    pdb.set_trace()
+    if len(input_img.shape) == 2:
+        input_img = np.stack([input_img]*3, axis=-1)
     input_img = np.concatenate([input_img, np.ones([input_img.shape[0], input_img.shape[1], 1])], axis=-1).astype(np.uint8)
     input_img[:, :, -1] = 255
     input_img = imresize(input_img, [scale, scale, 4])

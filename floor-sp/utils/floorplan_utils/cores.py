@@ -215,7 +215,7 @@ def _get_room_connections_pixel_grpah(room_info, density_img, inter_region, inte
     room_edge_map[np.where(room_edge_map > 0.5)] = 1
     room_edge_map = np.clip(room_edge_map, 0, 1)
 
-    # for debugging use
+    # for visualizing all intermediate representations
     import cv2
     from scipy.misc import imsave, imread
     debug_img = np.zeros([256, 256, 3])
@@ -371,8 +371,8 @@ def _get_room_connections_pixel_grpah(room_info, density_img, inter_region, inte
                   (0, 255, 0))
 
     # put texts for path
-    path_str = '-'.join([str(all_nodes.index(x)) for x in room_path])
-    cv2.putText(debug_img, path_str, (20, 20), 1, 0.5, (255, 255, 255))
+    # path_str = '-'.join([str(all_nodes.index(x)) for x in room_path])
+    # cv2.putText(debug_img, path_str, (20, 20), 1, 0.5, (255, 255, 255))
 
     imsave('./room_results/test/{}_{}_results_test.png'.format(global_idx, room_idx), debug_img)
     #####

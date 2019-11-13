@@ -19,7 +19,7 @@ from utils.floorplan_utils.floorplan_misc import visualize_rooms_info
 
 def train(configs):
     train_dataset = LianjiaAffiliationDataset(
-        data_dir='/local-scratch/cjc/floor-sp/floor-sp/data/Lianjia_room',
+        data_dir='./data/Lianjia_room',
         phase='train', mode=configs.mode)
 
     train_loader = DataLoader(train_dataset, batch_size=configs.batch_size, shuffle=True)
@@ -84,7 +84,7 @@ def train(configs):
 
 def test(configs):
     test_dataset = LianjiaAffiliationDataset(
-        data_dir='/local-scratch/cjc/floor-sp/floor-sp/data/Lianjia_room', phase='test', mode=configs.mode)
+        data_dir= './data/Lianjia_room', phase='test', mode=configs.mode)
     # only support bs = 1 for testing
     test_loader = DataLoader(test_dataset, batch_size=1, shuffle=False)
 
@@ -162,9 +162,9 @@ def predict(configs):
     model_room_corner.eval()
 
     # Test set
-    data_dir = '/local-scratch/cjc/floor-sp/floor-sp/data/Lianjia_room/test'
+    data_dir = './data/dataset_room/test'
     # Corner preds on the test set
-    corner_preds_dir = '/local-scratch/cjc/floor-sp/floor-sp/results_corner/lr_0.0001_batch_size_4_augmentation_r_corner_edge/test_preds'
+    corner_preds_dir = './results_corner/lr_0.0001_batch_size_4_augmentation_r_corner_edge/test_preds'
 
     assert len(os.listdir(data_dir)) == len(os.listdir(corner_preds_dir))
     predict_batch_size = 32

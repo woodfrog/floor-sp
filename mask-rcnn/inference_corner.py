@@ -34,13 +34,13 @@ if config.GPU_COUNT:
     model = model.cuda()
 
 # Load weights trained on MS-COCO
-saved_model = './logs/lianjia_dataset20180920T2038/mask_rcnn_lianjia_dataset_0069.pth'
+saved_model = './logs/mask_rcnn_lianjia_dataset_0069.pth'
 model.load_state_dict(torch.load(saved_model))
 
 print('loaded weights from {}'.format(saved_model))
 
 # Read in metadata
-metadata_path = '/local-scratch/cjc/floor-sp/data/lianjia_500/processed/room_metadata.json'
+metadata_path = '../data/public_100/processed/room_metadata.json'
 with open(metadata_path, 'r') as f:
     metadata = json.load(f)
 label_class_map = metadata['label_room_map']
@@ -54,12 +54,12 @@ phase = 'test'
 data_dir = os.path.join(metadata['base_dir'], phase)
 
 # Set the corner data base path
-CORNER_DATA_BASE = '/local-scratch/cjc/floor-sp/floor-sp/data/Lianjia_corner'
+CORNER_DATA_BASE = '../floor-sp/data/dataset_corner'
 if not os.path.exists(CORNER_DATA_BASE):
-    os.mkdir(CORNER_DATA_BASE)
+    os.makedirs(CORNER_DATA_BASE)
 CORNER_DATA_BASE = os.path.join(CORNER_DATA_BASE, phase)
 if not os.path.exists(CORNER_DATA_BASE):
-    os.mkdir(CORNER_DATA_BASE)
+    os.makedirs(CORNER_DATA_BASE)
 
 VIZ_DIR = './{}_viz'.format(phase)
 if not os.path.exists(VIZ_DIR):
