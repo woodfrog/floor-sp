@@ -1,5 +1,7 @@
 # Floor-SP: Inverse CAD for Floorplans by Sequential Room-wise Shortest Path
 
+[[Project Page](http://jcchen.me/floor-sp/)] [[Video](https://www.youtube.com/watch?v=PyYz7XAs7UE&feature=emb_title)]
+
 ## Contents
 1. [Overview](#overview)
 2. [Data download](#data-download)
