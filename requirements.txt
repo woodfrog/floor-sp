@@ -3,7 +3,7 @@ imageio==2.5.0
 imagesize==0.7.1
 matplotlib==3.0.3
 numpy==1.16.3
-opencv-python==3.4.3.18
+opencv-python==3.4.7.28
 pandas==0.18.1
 Pillow==8.2.0
 PyYAML==5.1
