@@ -122,6 +122,11 @@ move all edges to that place. This simpler implementation works well for non-pro
 
 The implementation is based on Python3.5 and Pytorch0.4.0. The file [**requirements.txt**](https://github.com/woodfrog/floor-sp/blob/master/requirements.txt) contains related packages and their corresponding versions in the environment for running the whole Floor-SP. You can do `pip install -r requirements.txt` to install all of them. 
 
+### Pytorch 0.4.0 installation
+
+```
+pip install torch===0.4.0 torchvision===0.2.1 -f https://download.pytorch.org/whl/torch_stable.html
+```
 
 ### Algorithm Dependencies
 
