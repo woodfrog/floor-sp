@@ -2,6 +2,9 @@
 
 [[Project Page](http://jcchen.me/floor-sp/)] [[Video](https://www.youtube.com/watch?v=PyYz7XAs7UE&feature=emb_title)]
 
+Update (June 2022): our recent work, [HEAT: Holistic Edge Attention Transformer for Structured Reconstruction](https://heat-structured-reconstruction.github.io/), has better performance and efficiency than Floor-SP on floorplan reconstruction and works well for other planar graph reconstruction tasks. Please check it out if interested.
+
+
 ## Contents
 1. [Overview](#overview)
 2. [Data download](#data-download)
