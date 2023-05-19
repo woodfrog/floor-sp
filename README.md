@@ -41,7 +41,7 @@ If you find the paper and the code helpful, please consider citing our paper:
 
 ~~The data will be release by Beike(www.ke.com) around Nov 2019, the link will be provided here. We will then provide a more detailed instruction on how to process the data and get output from Floor-SP.~~
 
-**Oct 28**: 100 complete house scans have been released by Beike ([www.ke.com](https://www.ke.com)) at this [link](http://realsee.com/open/en). Beike will send the data links via email after you fill out the form. A more detailed guideline on the data format will be provided soon by Beike. The 100 scans include the test set used in our paper, the IDs of the test scenes are provided in [data/test_ids.txt](https://github.com/woodfrog/floor-sp/blob/master/data/test_ids.txt).
+**Oct 28**: 100 complete house scans have been released by Beike ([www.ke.com](https://www.ke.com)) at [link](http://realsee.com/open/en) or [link](http://realsee.com/open). Beike will send the data links via email after you fill out the form. A more detailed guideline on the data format will be provided soon by Beike. The 100 scans include the test set used in our paper, the IDs of the test scenes are provided in [data/test_ids.txt](https://github.com/woodfrog/floor-sp/blob/master/data/test_ids.txt).
 
 To prepare the data, first fill the form on Beike's website to get the email containing the download links. Download the email from Beike and save the html file into ./data/email.html. Then run `./data/download.sh` to download all the 100 data and unzip them automatically:
 
