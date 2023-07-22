@@ -14,6 +14,6 @@ scipy==1.2.1
 six==1.12.0
 sklearn==0.0
 tensorboardX==1.4
-torch==0.4.0
+torch==1.13.1
 torchvision==0.2.1
 plyfile==0.6
